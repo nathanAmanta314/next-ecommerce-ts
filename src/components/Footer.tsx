@@ -10,11 +10,10 @@ const Footer = () => {
             <div className="text-2xl tracking-wide">LAMA</div>
           </Link>
           <p>
-            3252 Winding Way, Central Plaza, Willowbrook, CA 90210, United
-            States
+            purwokerto, jawa tengah, indonesia
           </p>
-          <span className="font-semibold">hello@lama.dev</span>
-          <span className="font-semibold">+1 234 567 890</span>
+          <span className="font-semibold">zanuar@gmail.com</span>
+          <span className="font-semibold">+62 234 567 89</span>
           <div className="flex gap-6">
             <Image src="/facebook.png" alt="" width={16} height={16} />
             <Image src="/instagram.png" alt="" width={16} height={16} />
