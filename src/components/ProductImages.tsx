@@ -1,33 +1,34 @@
 import Image from "next/image";
 
+type Props = {
+  items: string[];
+};
 
-const ProductImages = () => {
+const ProductImages = ({ items }: Props) => {
   return (
-    <div className="">
+    <div>
       <div className="h-[500px] relative">
         <Image
-          src={
-            "https://images.pexels.com/photos/1926769/pexels-photo-1926769.jpeg?auto=compress&cs=tinysrgb&w=800 "
-          }
-          alt=""
+          src={items[0]}
+          alt="Main Image"
           fill
           sizes="50vw"
           className="object-cover rounded-md"
         />
       </div>
-      <div>
-        <div className="w-1/4 h-32 relative gap4 mt-8">
-          {" "}
-          <Image
-            src={
-              "https://images.pexels.com/photos/1926769/pexels-photo-1926769.jpeg?auto=compress&cs=tinysrgb&w=800 "
-            }
-            alt=""
-            fill
-            sizes="30vw"
-            className="object-cover rounded-md"
-          />
-        </div>
+
+      <div className="flex gap-4 mt-8">
+        {items.slice(1).map((img, i) => (
+          <div key={i} className="w-1/4 h-32 relative">
+            <Image
+              src={img}
+              alt={`Thumbnail ${i + 1}`}
+              fill
+              sizes="30vw"
+              className="object-cover rounded-md"
+            />
+          </div>
+        ))}
       </div>
     </div>
   );
