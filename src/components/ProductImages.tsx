@@ -1,31 +1,49 @@
 import Image from "next/image";
-
-type Props = {
-  items: string[];
-};
-
-const ProductImages = ({ items }: Props) => {
+import { useState } from "react";
+const images = [
+  {
+    id: 1,
+    url: "https://images.pexels.com/photos/31978812/pexels-photo-31978812.jpeg",
+  },
+  {
+    id: 2,
+    url: "https://images.pexels.com/photos/8791512/pexels-photo-8791512.jpeg",
+  },
+  {
+    id: 3,
+    url: "https://images.pexels.com/photos/30433355/pexels-photo-30433355.jpeg",
+  },
+  {
+    id: 4,
+    url: "https://images.pexels.com/photos/30918864/pexels-photo-30918864.jpeg",
+  },
+];
+const ProductImages = () => {
+  const [index, setIndex] = useState(0);
   return (
-    <div>
+    <div className="">
       <div className="h-[500px] relative">
         <Image
-          src={items[0]}
-          alt="Main Image"
+          src={images[index].url}
+          alt=""
           fill
-          sizes="50vw"
           className="object-cover rounded-md"
+          sizes="50vw"
         />
       </div>
-
-      <div className="flex gap-4 mt-8">
-        {items.slice(1).map((img, i) => (
-          <div key={i} className="w-1/4 h-32 relative">
+      <div className="flex justify-between gap-4 mt-8">
+        {images.map((img, i) => (
+          <div
+            className="w-1/4 h-32 relative gap-4 mt-8 cursor-pointer"
+            key={img.id}
+            onClick={() => setIndex(i)}
+          >
             <Image
-              src={img}
-              alt={`Thumbnail ${i + 1}`}
+              src={img.url}
+              alt=""
               fill
-              sizes="30vw"
               className="object-cover rounded-md"
+              sizes="30vw"
             />
           </div>
         ))}
