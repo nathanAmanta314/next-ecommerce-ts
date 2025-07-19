@@ -1,9 +1,12 @@
 import { wixClientServer } from "@/lib/wixClientServer";
 import { products } from "@wix/stores";
-import DOMPurify from "isomorphic-dompurify";
 import Image from "next/image";
 import Link from "next/link";
-const PRODUCT_PER_PAGE = 20;
+import DOMPurify from "isomorphic-dompurify";
+import Pagination from './Pagination';
+
+
+const PRODUCT_PER_PAGE = 8;
 
 const ProductList = async ({
   categoryId,
@@ -15,15 +18,39 @@ const ProductList = async ({
   searchParams?: any;
 }) => {
   const wixClient = await wixClientServer();
-  const res = await wixClient.products
-    .queryProducts()
-    .eq("collectionIds", categoryId)
-    .limit(limit || PRODUCT_PER_PAGE)
-    .find();
 
-  console.log(res.items[0].price);
+  const productQuery = wixClient.products
+    .queryProducts()
+    .startsWith("name", searchParams?.name || "")
+    .eq("collectionIds", categoryId)
+    .hasSome(
+      "productType",
+      searchParams?.type ? [searchParams.type] : ["physical", "digital"]
+    )
+    .gt("priceData.price", searchParams?.min || 0)
+    .lt("priceData.price", searchParams?.max || 999999)
+    .limit(limit || PRODUCT_PER_PAGE)
+    .skip(
+      searchParams?.page
+        ? parseInt(searchParams.page) * (limit || PRODUCT_PER_PAGE)
+        : 0
+    );
+
+  if (searchParams?.sort) {
+    const [sortType, sortBy] = searchParams.sort.split(" ");
+
+    if (sortType === "asc") {
+      productQuery.ascending(sortBy);
+    }
+    if (sortType === "desc") {
+      productQuery.descending(sortBy);
+    }
+  }
+
+  const res = await productQuery.find();
+
   return (
-    <div className="flex gap-x-8 gap-y-16 justify-between flex-wrap">
+    <div className="mt-12 flex gap-x-8 gap-y-16 justify-between flex-wrap">
       {res.items.map((product: products.Product) => (
         <Link
           href={"/" + product.slug}
@@ -62,13 +89,20 @@ const ProductList = async ({
                   )?.description || ""
                 ),
               }}
-            />
+            ></div>
           )}
-          <button className="rounded-2xl ring-1 ring-red-300 text-red-300 py-2 px-4 w-max text-xs hover:bg-red-300 hover:text-white">
-            Add Cart
+          <button className="rounded-2xl ring-1 ring-[#F35C7A] text-[#F35C7A] w-max py-2 px-4 text-xs hover:bg-[#F35C7A] hover:text-white">
+            Add to Cart
           </button>
         </Link>
       ))}
+      {searchParams?.cat || searchParams?.name ? (
+        <Pagination
+          currentPage={res.currentPage || 0}
+          hasPrev={res.hasPrev()}
+          hasNext={res.hasNext()}
+        />
+      ) : null}
     </div>
   );
 };
