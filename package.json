@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@wix/redirects": "^1.0.92",
     "@wix/sdk": "^1.15.24",
     "@wix/stores": "^1.0.487",
     "isomorphic-dompurify": "^2.26.0",
@@ -17,19 +18,22 @@
     "next": "15.3.4",
     "next-cookies": "^2.0.3",
     "react": "^19.0.0",
+    "react-confetti": "^6.4.0",
     "react-dom": "^19.0.0",
+    "tailwindcss": "^3.4.17",
     "zustand": "^5.0.6"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/postcss": "^4.1.11",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "autoprefixer": "^10.4.21",
     "eslint": "^9",
     "eslint-config-next": "15.3.4",
-    "tailwindcss": "^4",
+    "postcss": "^8.5.6",
     "typescript": "^5"
   }
 }

@@ -17,16 +17,16 @@ type CartState = {
 };
 
 export const useCartStore = create<CartState>((set) => ({
-  cart: [],
+  cart: {} as currentCart.Cart,
   isLoading: true,
   counter: 0,
   getCart: async (wixClient) => {
     try {
       const cart = await wixClient.currentCart.getCurrentCart();
       set({
-        cart: cart || [],
+        cart: cart || ({} as currentCart.Cart),
         isLoading: false,
-        counter: cart?.lineItems.length || 0,
+        counter: cart?.lineItems?.length || 0,
       });
     } catch (err) {
       set((prev) => ({ ...prev, isLoading: false }));
@@ -34,35 +34,43 @@ export const useCartStore = create<CartState>((set) => ({
   },
   addItem: async (wixClient, productId, variantId, quantity) => {
     set((state) => ({ ...state, isLoading: true }));
-    const response = await wixClient.currentCart.addToCurrentCart({
-      lineItems: [
-        {
-          catalogReference: {
-            appId: process.env.NEXT_PUBLIC_WIX_APP_ID!,
-            catalogItemId: productId,
-            ...(variantId && { options: { variantId } }),
+    try {
+      const response = await wixClient.currentCart.addToCurrentCart({
+        lineItems: [
+          {
+            catalogReference: {
+              appId: process.env.NEXT_PUBLIC_WIX_APP_ID!,
+              catalogItemId: productId,
+              ...(variantId && { options: { variantId } }),
+            },
+            quantity: quantity,
           },
-          quantity: quantity,
-        },
-      ],
-    });
+        ],
+      });
 
-    set({
-      cart: response.cart,
-      counter: response.cart?.lineItems.length,
-      isLoading: false,
-    });
+      set({
+        cart: response.cart || ({} as currentCart.Cart),
+        counter: response.cart?.lineItems?.length || 0,
+        isLoading: false,
+      });
+    } catch (err) {
+      set((state) => ({ ...state, isLoading: false }));
+    }
   },
   removeItem: async (wixClient, itemId) => {
     set((state) => ({ ...state, isLoading: true }));
-    const response = await wixClient.currentCart.removeLineItemsFromCurrentCart(
-      [itemId]
-    );
+    try {
+      const response = await wixClient.currentCart.removeLineItemsFromCurrentCart(
+        [itemId]
+      );
 
-    set({
-      cart: response.cart,
-      counter: response.cart?.lineItems.length,
-      isLoading: false,
-    });
+      set({
+        cart: response.cart || ({} as currentCart.Cart),
+        counter: response.cart?.lineItems?.length || 0,
+        isLoading: false,
+      });
+    } catch (err) {
+      set((state) => ({ ...state, isLoading: false }));
+    }
   },
 }));
